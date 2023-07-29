@@ -107,6 +107,20 @@ static AttrReply getattr(const Context &ctx, char (&attrstr)[256]) {
 }
 } // InodeFileByInode
 
+namespace InodeRoly {
+static AttrReply getattr(const Context &ctx, char (&attrstr)[256]) {
+	struct stat o_stbuf;
+	memset(&o_stbuf, 0, sizeof(struct stat));
+	attr_to_stat(inode_, attr, &o_stbuf);
+	stats_inc(OP_GETATTR);
+	makeattrstr(attrstr, 256, &o_stbuf);
+	oplog_printf(ctx, "getattr (%lu) (internal node: ROLY): OK (3600,%s)",
+	            (unsigned long int)inode_,
+	            attrstr);
+	return AttrReply{o_stbuf, 3600.0};
+}
+} // InodeRoly
+
 typedef AttrReply (*GetAttrFunc)(const Context&, char (&)[256]);
 static const std::array<GetAttrFunc, 16> funcs = {{
 	 &InodeStats::getattr,          //0x0U
@@ -114,7 +128,7 @@ static const std::array<GetAttrFunc, 16> funcs = {{
 	 &InodeOphistory::getattr,      //0x2U
 	 &InodeTweaks::getattr,         //0x3U
 	 &InodeFileByInode::getattr,    //0x4U
-	 nullptr,                       //0x5U
+	 &InodeRoly::getattr,           //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
 	 nullptr,                       //0x8U

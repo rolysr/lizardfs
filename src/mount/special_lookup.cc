@@ -149,6 +149,27 @@ static EntryParam lookup(const Context &ctx, Inode parent, const char *name,
 }
 } // InodeFileByInode
 
+namespace InodeRoly {
+static EntryParam lookup(const Context &ctx, Inode parent, const char *name,
+	                      char attrstr[256]) {
+	EntryParam e;
+	e.ino = inode_;
+	e.attr_timeout = 3600.0;
+	e.entry_timeout = 3600.0;
+	attr_to_stat(inode_, attr, &e.attr);
+	stats_inc(OP_LOOKUP_INTERNAL);
+	makeattrstr(attrstr, 256, &e.attr);
+	oplog_printf(ctx, "lookup (%lu,%s) (internal node: ROLY): OK (%.1f,%lu,%.1f,%s)",
+	            (unsigned long int)parent,
+	            name,
+	            e.entry_timeout,
+	            (unsigned long int)e.ino,
+	            e.attr_timeout,
+	            attrstr);
+	return e;
+}
+}  //InodeRoly
+
 static const std::array<std::function<EntryParam
 	(const Context&, Inode, const char*, char[256])>, 16> funcs = {{
 	 &InodeStats::lookup,           //0x0U
@@ -156,7 +177,7 @@ static const std::array<std::function<EntryParam
 	 &InodeOphistory::lookup,       //0x2U
 	 &InodeTweaks::lookup,          //0x3U
 	 &InodeFileByInode::lookup,     //0x4U
-	 nullptr,                       //0x5U
+	 &InodeRoly::lookup,            //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
 	 nullptr,                       //0x8U

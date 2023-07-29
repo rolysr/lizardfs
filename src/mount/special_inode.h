@@ -65,6 +65,17 @@ namespace InodeFileByInode {
 	extern const LizardClient::Inode inode_;
 }
 
+namespace InodeRoly {
+	typedef struct _rinfo {
+		char *buff;
+		uint32_t leng;
+		uint8_t reset;
+		pthread_mutex_t lock;
+	} rinfo;
+	extern const Attributes attr;
+	extern const LizardClient::Inode inode_;
+}
+
 std::vector<uint8_t> special_read(LizardClient::Inode ino, const LizardClient::Context &ctx,
 	                          size_t size, off_t off, LizardClient::FileInfo *fi, int debug_mode);
 

@@ -58,3 +58,8 @@ const Inode InodeTweaks::inode_ = SPECIAL_INODE_TWEAKS;
 const Attributes InodeFileByInode::attr =
 	  {{'d', 0x01,0xED, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,1, 0,0,0,0,0,0,0,0}};
 const Inode InodeFileByInode::inode_ = SPECIAL_INODE_FILE_BY_INODE;
+
+// 0x01A4 == 0b110100100 == 0644
+const Attributes InodeRoly::attr =
+	  {{'f', 0x01,0xA4, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,1, 0,0,0,0,0,0,0,0}};
+const Inode InodeRoly::inode_ = SPECIAL_INODE_ROLY;

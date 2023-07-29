@@ -180,13 +180,56 @@ static std::vector<uint8_t> read(const Context &ctx,
 }
 } // InodeTweaks
 
+namespace InodeRoly {
+static std::vector<uint8_t> read(const Context &ctx,
+		size_t size, off_t off, FileInfo *fi, int debug_mode) {
+	if (debug_mode) {
+		printDebugReadInfo(ctx, SPECIAL_INODE_STATS, size, off);
+	}
+	std::vector<uint8_t> ret;
+	rinfo *rolyinfo = reinterpret_cast<rinfo*>(fi->fh);
+	if (rolyinfo != NULL) {
+		PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
+
+		if (off >= rolyinfo->leng) {
+			printReadOplogNoData(ctx,
+			                    SPECIAL_INODE_STATS,
+			                    (uint64_t)size,
+			                    (uint64_t)off);
+		} else if ((uint64_t)(off + size) > (uint64_t)(rolyinfo->leng)) {
+			std::copy(rolyinfo->buff + off, rolyinfo->buff + rolyinfo->leng,
+			          std::back_inserter(ret));
+			printReadOplogOk(ctx,
+			                SPECIAL_INODE_STATS,
+			                (uint64_t)size,
+			                (uint64_t)off,
+			                (unsigned long int)(rolyinfo->leng-off));
+		} else {
+			std::copy(rolyinfo->buff + off, rolyinfo->buff + off + size,
+			          std::back_inserter(ret));
+			printReadOplogOk(ctx,
+			                SPECIAL_INODE_STATS,
+			                (uint64_t)size,
+			                (uint64_t)off,
+			                (unsigned long int)size);
+		}
+	} else {
+		printReadOplogNoData(ctx,
+		                    SPECIAL_INODE_STATS,
+		                    (uint64_t)size,
+		                    (uint64_t)off);
+	}
+	return ret;
+}
+} // InodeRoly
+
 static const std::array<std::function<std::vector<uint8_t>
 	(const Context&, size_t, off_t, FileInfo*, int)>, 16> funcs = {{
 	 &InodeStats::read,             //0x0U
 	 &InodeOplog::read,             //0x1U
 	 &InodeOphistory::read,         //0x2U
 	 &InodeTweaks::read,            //0x3U
-	 nullptr,                       //0x5U
+	 &InodeRoly::read,              //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
 	 nullptr,                       //0x8U

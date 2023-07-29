@@ -92,13 +92,33 @@ static void release(FileInfo *fi) {
 }
 } // InodeTweaks
 
+namespace InodeRoly {
+static void release(FileInfo *fi) {
+	rinfo *rolyinfo = reinterpret_cast<rinfo*>(fi->fh);
+	if (rolyinfo!=NULL) {
+		PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
+		if (rolyinfo->buff!=NULL) {
+			free(rolyinfo->buff);
+		}
+		if (rolyinfo->reset) {
+			stats_reset_all();
+		}
+		lock.unlock(); // This unlock is needed, since we want to destroy the mutex
+		pthread_mutex_destroy(&(rolyinfo->lock));      // make helgrind happy
+		free(rolyinfo);
+	}
+	oplog_printf("release (%lu) (internal node: ROLY): OK",
+	            (unsigned long int)inode_);
+}
+} // InodeRoly
+
 typedef void (*ReleaseFunc)(FileInfo *);
 static const std::array<ReleaseFunc, 16> funcs = {{
 	 &InodeStats::release,          //0x0U
 	 &InodeOplog::release,          //0x1U
 	 &InodeOphistory::release,      //0x2U
 	 &InodeTweaks::release,         //0x3U
-	 nullptr,                       //0x5U
+	 &InodeRoly::release,           //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
 	 nullptr,                       //0x8U

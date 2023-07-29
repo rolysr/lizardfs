@@ -110,13 +110,38 @@ static void open(const Context &ctx, FileInfo *fi) {
 }
 } // InodeTweaks
 
+namespace InodeRoly {
+static void open(const Context &ctx, FileInfo *fi) {
+	rinfo *rolyinfo;
+	rolyinfo = (rinfo*) malloc(sizeof(rinfo));
+	if (!rolyinfo) {
+		oplog_printf(ctx, "open (%lu) (internal node: STATS): %s",
+		            (unsigned long int)inode_,
+		            lizardfs_error_string(LIZARDFS_ERROR_OUTOFMEMORY));
+		throw RequestException(LIZARDFS_ERROR_OUTOFMEMORY);
+	}
+	if (pthread_mutex_init(&(rolyinfo->lock), NULL))  {
+		free(rolyinfo);
+		throw RequestException(LIZARDFS_ERROR_EPERM);
+	}
+	PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
+	stats_show_all(&(rolyinfo->buff),&(rolyinfo->leng));
+	rolyinfo->reset = 0;
+	fi->fh = reinterpret_cast<uintptr_t>(rolyinfo);
+	fi->direct_io = 1;
+	fi->keep_cache = 0;
+	oplog_printf(ctx, "open (%lu) (internal node: ROLY): OK (1,0)",
+	            (unsigned long int)inode_);
+}
+} // InodeRoly
+
 static const std::array<std::function<void
 	(const Context&, FileInfo*)>, 16> funcs = {{
 	 &InodeStats::open,             //0x0U
 	 &InodeOplog::open,             //0x1U
 	 &InodeOphistory::open,         //0x2U
 	 &InodeTweaks::open,            //0x3U
-	 nullptr,                       //0x5U
+	 &InodeRoly::open,              //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
 	 nullptr,                       //0x8U

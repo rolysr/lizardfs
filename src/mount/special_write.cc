@@ -95,13 +95,30 @@ static BytesWritten write(const Context &ctx, const char *buf, size_t size,
 }
 } // InodeTweaks
 
+namespace InodeRoly {
+static BytesWritten write(const Context &ctx, const char */*buf*/, size_t size,
+	                       off_t off, FileInfo *fi) {
+	rinfo *rolyinfo = reinterpret_cast<rinfo*>(fi->fh);
+	if (rolyinfo != NULL) {
+		PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
+		rolyinfo->reset = 1;
+	}
+	oplog_printf(ctx, "write (%lu,%" PRIu64 ",%" PRIu64 "): OK (%lu)",
+	            (unsigned long int)inode_,
+	            (uint64_t)size,
+	            (uint64_t)off,
+	            (unsigned long int)size);
+	return size;
+}
+} // InodeStats
+
 static const std::array<std::function<BytesWritten
 	(const Context&, const char *, size_t, off_t, FileInfo*)>, 16> funcs = {{
 	 &InodeStats::write,            //0x0U
 	 &InodeOplog::write,            //0x1U
 	 &InodeOphistory::write,        //0x2U
 	 &InodeTweaks::write,           //0x3U
-	 nullptr,                       //0x5U
+	 &InodeRoly::write,             //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
 	 nullptr,                       //0x8U
