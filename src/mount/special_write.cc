@@ -98,11 +98,6 @@ static BytesWritten write(const Context &ctx, const char *buf, size_t size,
 namespace InodeRoly {
 static BytesWritten write(const Context &ctx, const char */*buf*/, size_t size,
 	                       off_t off, FileInfo *fi) {
-	rinfo *rolyinfo = reinterpret_cast<rinfo*>(fi->fh);
-	if (rolyinfo != NULL) {
-		PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
-		rolyinfo->reset = 1;
-	}
 	oplog_printf(ctx, "write (%lu,%" PRIu64 ",%" PRIu64 "): OK (%lu)",
 	            (unsigned long int)inode_,
 	            (uint64_t)size,

@@ -66,12 +66,6 @@ namespace InodeFileByInode {
 }
 
 namespace InodeRoly {
-	typedef struct _rinfo {
-		char *buff;
-		uint32_t leng;
-		uint8_t reset;
-		pthread_mutex_t lock;
-	} rinfo;
 	extern const Attributes attr;
 	extern const LizardClient::Inode inode_;
 }

@@ -94,19 +94,8 @@ static void release(FileInfo *fi) {
 
 namespace InodeRoly {
 static void release(FileInfo *fi) {
-	rinfo *rolyinfo = reinterpret_cast<rinfo*>(fi->fh);
-	if (rolyinfo!=NULL) {
-		PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
-		if (rolyinfo->buff!=NULL) {
-			free(rolyinfo->buff);
-		}
-		if (rolyinfo->reset) {
-			stats_reset_all();
-		}
-		lock.unlock(); // This unlock is needed, since we want to destroy the mutex
-		pthread_mutex_destroy(&(rolyinfo->lock));      // make helgrind happy
-		free(rolyinfo);
-	}
+	char *data = reinterpret_cast<char*>(fi->fh);
+	delete data;
 	oplog_printf("release (%lu) (internal node: ROLY): OK",
 	            (unsigned long int)inode_);
 }

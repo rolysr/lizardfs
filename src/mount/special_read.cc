@@ -21,6 +21,7 @@
 #include "mount/client_common.h"
 #include "mount/special_inode.h"
 #include "mount/stats.h"
+#include "cstring"
 
 using namespace LizardClient;
 
@@ -184,42 +185,28 @@ namespace InodeRoly {
 static std::vector<uint8_t> read(const Context &ctx,
 		size_t size, off_t off, FileInfo *fi, int debug_mode) {
 	if (debug_mode) {
-		printDebugReadInfo(ctx, SPECIAL_INODE_STATS, size, off);
+		printDebugReadInfo(ctx, SPECIAL_INODE_ROLY, size, off);
 	}
-	std::vector<uint8_t> ret;
-	rinfo *rolyinfo = reinterpret_cast<rinfo*>(fi->fh);
-	if (rolyinfo != NULL) {
-		PthreadMutexWrapper lock((rolyinfo->lock));         // make helgrind happy
-
-		if (off >= rolyinfo->leng) {
-			printReadOplogNoData(ctx,
-			                    SPECIAL_INODE_STATS,
-			                    (uint64_t)size,
-			                    (uint64_t)off);
-		} else if ((uint64_t)(off + size) > (uint64_t)(rolyinfo->leng)) {
-			std::copy(rolyinfo->buff + off, rolyinfo->buff + rolyinfo->leng,
-			          std::back_inserter(ret));
-			printReadOplogOk(ctx,
-			                SPECIAL_INODE_STATS,
-			                (uint64_t)size,
-			                (uint64_t)off,
-			                (unsigned long int)(rolyinfo->leng-off));
-		} else {
-			std::copy(rolyinfo->buff + off, rolyinfo->buff + off + size,
-			          std::back_inserter(ret));
-			printReadOplogOk(ctx,
-			                SPECIAL_INODE_STATS,
-			                (uint64_t)size,
-			                (uint64_t)off,
-			                (unsigned long int)size);
-		}
-	} else {
+	char* ptr = reinterpret_cast<char*>(fi->fh);
+	if (off >= static_cast<off_t>(strlen(ptr))) {
 		printReadOplogNoData(ctx,
-		                    SPECIAL_INODE_STATS,
+		                    SPECIAL_INODE_ROLY,
 		                    (uint64_t)size,
 		                    (uint64_t)off);
+		return std::vector<uint8_t>();
+	} else {
+		size_t availableBytes = size;
+		if ((uint64_t)(off + size) > (uint64_t)strlen(ptr)) {
+			availableBytes = strlen(ptr) - off;
+		}
+		const uint8_t *data = reinterpret_cast<const uint8_t*>(ptr) + off;
+		printReadOplogOk(ctx,
+		                SPECIAL_INODE_ROLY,
+		                (uint64_t)size,
+		                (uint64_t)off,
+		                (unsigned long int)availableBytes);
+		return std::vector<uint8_t>(data, data + availableBytes);
 	}
-	return ret;
 }
 } // InodeRoly
 
