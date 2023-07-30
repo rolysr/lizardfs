@@ -107,10 +107,10 @@ static const std::array<ReleaseFunc, 16> funcs = {{
 	 &InodeOplog::release,          //0x1U
 	 &InodeOphistory::release,      //0x2U
 	 &InodeTweaks::release,         //0x3U
-	 &InodeRoly::release,           //0x5U
+	 nullptr,           			//0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
-	 nullptr,                       //0x8U
+	 &InodeRoly::release,           //0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU

@@ -128,10 +128,10 @@ static const std::array<GetAttrFunc, 16> funcs = {{
 	 &InodeOphistory::getattr,      //0x2U
 	 &InodeTweaks::getattr,         //0x3U
 	 &InodeFileByInode::getattr,    //0x4U
-	 &InodeRoly::getattr,           //0x5U
+	 nullptr,           			//0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
-	 nullptr,                       //0x8U
+	 &InodeRoly::getattr,           //0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU

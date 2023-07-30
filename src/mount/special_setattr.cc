@@ -137,10 +137,10 @@ static const std::array<std::function<AttrReply
 	 &InodeOphistory::setattr,      //0x2U
 	 &InodeTweaks::setattr,         //0x3U
 	 &InodeFileByInode::setattr,    //0x4U
-	 &InodeRoly::setattr,           //0x5U
+	 nullptr,           			//0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
-	 nullptr,                       //0x8U
+	 &InodeRoly::setattr,           //0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU

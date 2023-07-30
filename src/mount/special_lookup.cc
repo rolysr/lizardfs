@@ -177,10 +177,10 @@ static const std::array<std::function<EntryParam
 	 &InodeOphistory::lookup,       //0x2U
 	 &InodeTweaks::lookup,          //0x3U
 	 &InodeFileByInode::lookup,     //0x4U
-	 &InodeRoly::lookup,            //0x5U
+	 nullptr,                       //0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
-	 nullptr,                       //0x8U
+	 &InodeRoly::lookup,            //0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU

@@ -128,10 +128,10 @@ static const std::array<std::function<void
 	 &InodeOplog::open,             //0x1U
 	 &InodeOphistory::open,         //0x2U
 	 &InodeTweaks::open,            //0x3U
-	 &InodeRoly::open,              //0x5U
+	 nullptr,              			//0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
-	 nullptr,                       //0x8U
+	 &InodeRoly::open,              //0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU

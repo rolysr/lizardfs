@@ -113,10 +113,10 @@ static const std::array<std::function<BytesWritten
 	 &InodeOplog::write,            //0x1U
 	 &InodeOphistory::write,        //0x2U
 	 &InodeTweaks::write,           //0x3U
-	 &InodeRoly::write,             //0x5U
+	 nullptr,             			//0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
-	 nullptr,                       //0x8U
+	 &InodeRoly::write,             //0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU
