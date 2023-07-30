@@ -192,8 +192,6 @@ static const std::array<std::function<EntryParam
 
 EntryParam special_lookup(Inode ino, const Context &ctx, Inode parent, const char *name,
 	                  char attrstr[256]) {
-	
-
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		lzfs_pretty_syslog(LOG_WARNING,
