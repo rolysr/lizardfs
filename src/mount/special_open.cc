@@ -112,15 +112,13 @@ static void open(const Context &ctx, FileInfo *fi) {
 
 namespace InodeRoly {
 static void open(const Context &ctx, FileInfo *fi) {
-	char myArray[] = "Roly was here!";
+	char myArray[] = "Roly was here!\n";
 	char* ptr = myArray;
 	fi->fh = reinterpret_cast<uintptr_t>(ptr);
 	fi->direct_io = 1;
 	fi->keep_cache = 0;
-	fprintf(stderr, "Holaa");
 	oplog_printf(ctx, "open (%lu) (internal node: ROLY): OK (1,0)",
 	            (unsigned long int)inode_);
-	fprintf(stderr, "Holaa2");
 }
 } // InodeRoly
 

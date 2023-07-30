@@ -1954,7 +1954,6 @@ void open(Context &ctx, Inode ino, FileInfo *fi) {
 	int status;
 
 	finfo *fileinfo;
-	fprintf(stderr, "Entreee al opeeeen\n");
 	stats_inc(OP_OPEN);
 	if (debug_mode) {
 		oplog_printf(ctx, "open (%lu) ...", (unsigned long int)ino);
@@ -1964,7 +1963,6 @@ void open(Context &ctx, Inode ino, FileInfo *fi) {
 		special_open(ino, ctx, fi);
 		return;
 	}
-	fprintf(stderr, "Hice el special opeeeen\n");
 
 	oflags = 0;
 	if ((fi->flags & O_CREAT) == O_CREAT) {

@@ -93,9 +93,7 @@ static void release(FileInfo *fi) {
 } // InodeTweaks
 
 namespace InodeRoly {
-static void release(FileInfo *fi) {
-	char *data = reinterpret_cast<char*>(fi->fh);
-	delete data;
+static void release(FileInfo */*fi*/) {
 	oplog_printf("release (%lu) (internal node: ROLY): OK",
 	            (unsigned long int)inode_);
 }
