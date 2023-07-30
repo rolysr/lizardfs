@@ -97,15 +97,15 @@ static BytesWritten write(const Context &ctx, const char *buf, size_t size,
 
 namespace InodeRoly {
 static BytesWritten write(const Context &ctx, const char */*buf*/, size_t size,
-	                       off_t off, FileInfo *fi) {
-	oplog_printf(ctx, "write (%lu,%" PRIu64 ",%" PRIu64 "): OK (%lu)",
+	                       off_t off, FileInfo */*fi*/) {
+	oplog_printf(ctx, "write (%lu,%" PRIu64 ",%" PRIu64 "): %s",
 	            (unsigned long int)inode_,
 	            (uint64_t)size,
 	            (uint64_t)off,
-	            (unsigned long int)size);
-	return size;
+	            lizardfs_error_string(LIZARDFS_ERROR_EACCES));
+	throw RequestException(LIZARDFS_ERROR_EACCES);
 }
-} // InodeStats
+} // InodeRoly
 
 static const std::array<std::function<BytesWritten
 	(const Context&, const char *, size_t, off_t, FileInfo*)>, 16> funcs = {{
