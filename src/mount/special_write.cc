@@ -129,8 +129,6 @@ static const std::array<std::function<BytesWritten
 
 BytesWritten special_write(Inode ino, const Context &ctx, const char *buf,
 	                           size_t size, off_t off, FileInfo *fi) {
-	
-
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		lzfs_pretty_syslog(LOG_WARNING,

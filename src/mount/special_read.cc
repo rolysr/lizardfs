@@ -232,8 +232,6 @@ static const std::array<std::function<std::vector<uint8_t>
 
 std::vector<uint8_t> special_read(Inode ino, const Context &ctx, size_t size, off_t off,
 	                          FileInfo *fi, int debug_mode) {
-	
-
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		lzfs_pretty_syslog(LOG_WARNING,

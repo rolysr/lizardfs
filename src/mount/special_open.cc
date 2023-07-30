@@ -145,8 +145,6 @@ static const std::array<std::function<void
 }};
 
 void special_open(Inode ino, const Context &ctx, FileInfo *fi) {
-	
-
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		fprintf(stderr, "\nNo tiene sentido que entres a aqui\n");

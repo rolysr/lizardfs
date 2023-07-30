@@ -122,8 +122,6 @@ static const std::array<ReleaseFunc, 16> funcs = {{
 }};
 
 void special_release(Inode ino, FileInfo *fi) {
-	
-
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		lzfs_pretty_syslog(LOG_WARNING,
