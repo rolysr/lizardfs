@@ -152,6 +152,8 @@ static const std::array<std::function<AttrReply
 
 AttrReply special_setattr(Inode ino, const Context &ctx, struct stat *stbuf, int to_set,
 	                  char modestr[11], char attrstr[256]) {
+	
+
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		lzfs_pretty_syslog(LOG_WARNING,

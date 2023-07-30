@@ -117,8 +117,10 @@ static void open(const Context &ctx, FileInfo *fi) {
 	fi->fh = reinterpret_cast<uintptr_t>(ptr);
 	fi->direct_io = 1;
 	fi->keep_cache = 0;
+	fprintf(stderr, "Holaa");
 	oplog_printf(ctx, "open (%lu) (internal node: ROLY): OK (1,0)",
 	            (unsigned long int)inode_);
+	fprintf(stderr, "Holaa2");
 }
 } // InodeRoly
 
@@ -128,26 +130,30 @@ static const std::array<std::function<void
 	 &InodeOplog::open,             //0x1U
 	 &InodeOphistory::open,         //0x2U
 	 &InodeTweaks::open,            //0x3U
-	 nullptr,              			//0x5U
+	 nullptr,              			//0x4U
+	 nullptr,                       //0x5U
 	 nullptr,                       //0x6U
-	 nullptr,                       //0x7U
-	 &InodeRoly::open,              //0x8U
+	 nullptr,              			//0x7U
+     &InodeRoly::open,             	//0x8U
 	 nullptr,                       //0x9U
 	 nullptr,                       //0xAU
 	 nullptr,                       //0xBU
 	 nullptr,                       //0xCU
 	 nullptr,                       //0xDU
 	 nullptr,                       //0xEU
-	 nullptr,                       //0xEU
 	 &InodeMasterInfo::open         //0xFU
 }};
 
 void special_open(Inode ino, const Context &ctx, FileInfo *fi) {
+	
+
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
+		fprintf(stderr, "\nNo tiene sentido que entres a aqui\n");
 		lzfs_pretty_syslog(LOG_WARNING,
 			"Trying to call unimplemented 'open' function for special inode");
 		throw RequestException(LIZARDFS_ERROR_EINVAL);
 	}
+	fprintf(stderr, "\nHolaaa, termine open, el indice era correcto\n");
 	return func(ctx, fi);
 }

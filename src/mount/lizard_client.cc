@@ -1954,7 +1954,7 @@ void open(Context &ctx, Inode ino, FileInfo *fi) {
 	int status;
 
 	finfo *fileinfo;
-
+	fprintf(stderr, "Entreee al opeeeen\n");
 	stats_inc(OP_OPEN);
 	if (debug_mode) {
 		oplog_printf(ctx, "open (%lu) ...", (unsigned long int)ino);
@@ -1964,6 +1964,7 @@ void open(Context &ctx, Inode ino, FileInfo *fi) {
 		special_open(ino, ctx, fi);
 		return;
 	}
+	fprintf(stderr, "Hice el special opeeeen\n");
 
 	oflags = 0;
 	if ((fi->flags & O_CREAT) == O_CREAT) {
@@ -2003,6 +2004,7 @@ void open(Context &ctx, Inode ino, FileInfo *fi) {
 			(unsigned long int)ino,
 			(unsigned long int)fi->direct_io,
 			(unsigned long int)fi->keep_cache);
+	fprintf(stderr, "Termine lindo el opeeeen\n");
 }
 
 static void update_credentials(Context::IdType index, const GroupCache::Groups &groups) {

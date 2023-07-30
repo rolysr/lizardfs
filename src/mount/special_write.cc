@@ -113,6 +113,7 @@ static const std::array<std::function<BytesWritten
 	 &InodeOplog::write,            //0x1U
 	 &InodeOphistory::write,        //0x2U
 	 &InodeTweaks::write,           //0x3U
+	nullptr,         				//0x4U
 	 nullptr,             			//0x5U
 	 nullptr,                       //0x6U
 	 nullptr,                       //0x7U
@@ -123,12 +124,13 @@ static const std::array<std::function<BytesWritten
 	 nullptr,                       //0xCU
 	 nullptr,                       //0xDU
 	 nullptr,                       //0xEU
-	 nullptr,                       //0xEU
 	 &InodeMasterInfo::write        //0xFU
 }};
 
 BytesWritten special_write(Inode ino, const Context &ctx, const char *buf,
 	                           size_t size, off_t off, FileInfo *fi) {
+	
+
 	auto func = funcs[ino - SPECIAL_INODE_BASE];
 	if (!func) {
 		lzfs_pretty_syslog(LOG_WARNING,
