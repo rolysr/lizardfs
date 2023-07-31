@@ -486,7 +486,7 @@ static size_t count_colons_in_str(const char *str, size_t len) {
 }
 
 /**
- * Find and parse arg that matches to HOST[:PORT]:[PATH] pattern.
+ * Find and parse arg that matches to HOST[/PORT]:[PATH] pattern.
  */
 static int read_masterhost_if_present(struct fuse_args *args) {
 	if (args->argc < 2)
@@ -503,7 +503,6 @@ static int read_masterhost_if_present(struct fuse_args *args) {
 		else
 			break;
 	}
-
 	if (optpos >= args->argc)
 		return 0;
 
@@ -525,7 +524,7 @@ static int read_masterhost_if_present(struct fuse_args *args) {
 	uint32_t portlen = 0;
 	char *portbegin = NULL;
 
-	if (*c == ':' && colons > 1) {
+	if (*c == '/') {
 		c++;
 		portbegin = c;
 		while (*c >= '0' && *c <= '9') {
