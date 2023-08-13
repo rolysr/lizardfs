@@ -2002,7 +2002,6 @@ void open(Context &ctx, Inode ino, FileInfo *fi) {
 			(unsigned long int)ino,
 			(unsigned long int)fi->direct_io,
 			(unsigned long int)fi->keep_cache);
-	fprintf(stderr, "Termine lindo el opeeeen\n");
 }
 
 static void update_credentials(Context::IdType index, const GroupCache::Groups &groups) {
