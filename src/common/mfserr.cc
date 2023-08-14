@@ -85,6 +85,8 @@ int lizardfs_error_conv(uint8_t status) {
 			return ENOMEM;
 		case LIZARDFS_ERROR_E2BIG:
 			return E2BIG;
+		case LIZARDFS_ERROR_NOSPACE:
+			return 28;
 		default:
 			return EINVAL;
 	}
